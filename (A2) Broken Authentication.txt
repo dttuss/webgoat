@@ -1,0 +1,15 @@
+Authentication Bypasses
+
+JWT tokens
+3: Decoding a JWT token
+Sử dụng jwt.io
+8: JWT signing
+Sử dụng JohnTheRipper hoặc Hashcat crack Signature của JWT Token
+Thay đổi username = "WebGoat" và sử dụng signature đã crack được tạo JWT Token mới
+10: Refreshing a token
+
+
+Password reset
+
+Secure Passwords
+Đặt mật khẩu có độ phức tạp cao
