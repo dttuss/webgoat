@@ -1,0 +1,4 @@
+Insecure Login
+
+2:
+Sử dụng Burpsuite intercept request và thay đổi body.

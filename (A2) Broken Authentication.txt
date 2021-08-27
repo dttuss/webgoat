@@ -7,7 +7,9 @@ Sử dụng jwt.io
 Sử dụng JohnTheRipper hoặc Hashcat crack Signature của JWT Token
 Thay đổi username = "WebGoat" và sử dụng signature đã crack được tạo JWT Token mới
 10: Refreshing a token
-Quan sát mối quan hệ của "access_token" và "refresh_token"
+
+
+Password reset
 
 Secure Passwords
 Đặt mật khẩu có độ phức tạp cao
