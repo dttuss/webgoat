@@ -1,0 +1,18 @@
+7: Try It! Reflected XSS
+Cần tìm trường dữ liệu có thể XSS
+Sử dụng <script>alert(1)</script> lên từng vị trí có thể và quan sát.
+
+10: Identify potential for DOM-Based XSS
+Tìm được đoạn code sau trong GoatRouter.js
+routes: {
+	'welcome': 'welcomeRoute',
+	'lesson/:name': 'lessonRoute',
+	'lesson/:name/:pageNum': 'lessonPageRoute',
+	'test/:param': 'testRoute',
+	'reportCard': 'reportCard'
+        },
+'lesson/:name' có thể tương ứng với start.mvc#lesson/CrossSiteScripting.lesson
+Tương tự như vậy, 'test/:param' có thể là start.mvc#test
+
+11: Try It! DOM-Based XSS
+Có thể sử dụng test route để thực hiện xss.
